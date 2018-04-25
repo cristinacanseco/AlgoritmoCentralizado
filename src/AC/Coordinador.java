@@ -5,29 +5,33 @@
  */
 package AC;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Alumno
  */
 public class Coordinador {
     private String name;
-    Recurso rec = new Recurso();
+    Recurso2 rec ;
+    ArrayList<Integer> lista = new ArrayList<>();
     
     public Coordinador(String name){
         this.name = name;
     }
     
-    public boolean recibirPeticion(int id){
-        System.out.println(this.name + " recibe una petición de "+ id);
-        System.out.println("Cola: "+ id);
-        if (rec.recibirPeticion(id)){
-            
-             return true;
-        }
-        else{
-            return false;
-        }
-        
+    public Coordinador (int id){
+        lista.add(id);
+    }
+
+    public ArrayList<Integer> getLista() {
+        return lista;
+    }
+    
+    public void agregarDato(int i){
+        lista.add(i);
+        rec = new Recurso2(lista);
+        rec.start();
     }
     
 }

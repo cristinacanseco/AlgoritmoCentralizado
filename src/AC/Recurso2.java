@@ -7,60 +7,49 @@ package AC;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author Alumno
+ * @author Cristy
  */
-public class Recurso {
+public class Recurso2 extends Thread {
     private ArrayList<Integer> cola;
     private int recurso;
-
-    public Recurso(){
-        cola = new ArrayList<Integer>();
+    
+    public Recurso2(ArrayList<Integer> lista){
+        cola = lista;
         recurso = -1;
     }
     
     public ArrayList<Integer> getCola() {
         return cola;
     }
-
-    public void agregarCola(int id) {
-        this.cola.add(id);
-    }
     
-    public void recorrerCola(){
-        cola.remove(0);
-    }
-
-    
-    public int getRecurso() {
-        return recurso;
-    }
-
-    public void setRecurso(int recurso) {
-        this.recurso = recurso;
-    }    
-    
-    public boolean recibirPeticion(int id){
+    public void run(){
         //Revisar el recurso
-         if(recurso == -1){
-             //Asigna recurso
-             if(cola.isEmpty()){
-                recurso = id;      
-             }else{
-                 recurso = cola.get(0);
-                 cola.remove(0);
-             }
-            liberarRecurso(); 
-            return true;
-         }else{
-            //Agrega a la cola
-            cola.add(id);  
-            return false;
-         }
+        while(true){
+            try {
+                if(!cola.isEmpty()){
+                    if(recurso == -1){                      
+                        recurso = cola.get(0);
+                        liberarRecurso();         
+                    }else{
+                        try {
+                            //Agrega a la cola
+                            wait();
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Recurso2.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+                wait();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Recurso2.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
-    
     public void liberarRecurso(){
         String lista="";
         try {
@@ -70,15 +59,16 @@ public class Recurso {
             int t = ran.nextInt(10000);
             Thread.sleep(t);
             recurso = -1;
+            cola.remove(0);
 
             if(!cola.isEmpty()){
                 System.out.println("La cola de peticiones actualizada es: ");
                 for(int i=0; i<cola.size(); i++){
                     System.out.println("CA "+cola.get(i));
-                    lista += "\t" + cola.get(i);
+                    lista += "  " + cola.get(i);
                 }
                 GUI.jTextFieldLista.setText(lista);
-                recibirPeticion(cola.get(0));
+                
             }else{
                 System.out.println("La cola de peticiones actualizada está vacía ");
                 lista = "Cola de peticiones vacía";
@@ -89,5 +79,4 @@ public class Recurso {
             System.out.println(ex.getMessage());
         }
     }
-    
 }

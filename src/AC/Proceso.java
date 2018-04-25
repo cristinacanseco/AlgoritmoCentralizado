@@ -19,7 +19,7 @@ public class Proceso extends Thread{
     
     public Proceso(int id, Coordinador c){
         idP = id;
-        coo = c;
+        coo = new Coordinador(id);
     }
 
     public int getIdP() {
@@ -28,8 +28,7 @@ public class Proceso extends Thread{
     
     @Override
     public void run(){
-        coo.recibirPeticion(idP);
-         
+        
     }
     
 }
